@@ -47,5 +47,16 @@ REGEX_NISN = re.compile(
     re.IGNORECASE,
 )
 
+REGEX_IPK = re.compile(
+    r"(?:IPK|Indeks\s*Prestasi\s*Kumulatif)\s*[:;\-\=]?\s*([0-4][\.\,]\d{1,2})",
+    re.IGNORECASE
+)
+
+REGEX_TRANSCRIPT_ROW = re.compile(
+    r"^\s*(?:\d{1,3}[\.\)]?\s+)?([A-Za-z0-9\s\-\&\,]+?)\s+([1-6])\s+([A-E][B-D]?)\b",
+    re.MULTILINE | re.IGNORECASE
+)
+
 LABEL_NAMA = r"(?:Nama\s*(?:Mahasiswa|Siswa|Lengkap)?|name)\s*[:;\-]\s*([A-Z\s\.,'`]+)"
-LABEL_TEMPAT_TANGGAL_LAHIR = r"(?:Tempat,\s*tanggal\s*lahir|Tempat\s*dan\s*tanggal\s*lahir)\s*[:;\-]\s*([A-Za-z\s]+),\s*(\d{1,2}\s+[A-Za-z]+\s+\d{4})"
+LABEL_TEMPAT_TANGGAL_LAHIR = r"(?:Tempat,\s*tanggal\s*lahir|Tempat\s*dan\s*tanggal\s*lahir|Tempat\s*tanggal\s*lahir)\s*[:;\-]\s*([A-Za-z\s]+),\s*(\d{1,2}\s+[A-Za-z]+\s+\d{4})"
+LABEL_NOMOR_INDUK = re.compile(r"(?:Nomor\s*Induk\s*(?:Mahasiswa|Siswa)?|NIM|NISN)\s*[:;\-]\s*([\w\s\-]+)", re.IGNORECASE)
