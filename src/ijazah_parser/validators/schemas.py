@@ -1,6 +1,7 @@
 from datetime import date
 from typing import Optional
 from pydantic import Basemodel, Field, field_validator
+from ijazah_parser.validators.sivil import validate_sivil_year
 
 class BiodataSchema(BaseModel):
     nama: str = Field(..., description="Full name")
