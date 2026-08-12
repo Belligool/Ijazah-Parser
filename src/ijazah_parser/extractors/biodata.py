@@ -1,7 +1,7 @@
 import re
 from typing import Optional, Tuple
 from ijazah_parser.config import *
-from ijazah_parser.validator.schemas import *
+from ijazah_parser.validators.schemas import *
 
 def clean_name_string(name_str: str) -> str:
     cleaned = re.sub(r'[^A-Za-z\s\.,\']', '', name_str)

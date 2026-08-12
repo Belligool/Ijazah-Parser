@@ -33,7 +33,7 @@ REGEX_TANGGAL_ID = re.compile(
 )
 
 REGEX_PIN_SIVIL = re.compile(
-    r"(?:\b(?:No\.\s*Ijazah|PIN|Nomor\s*Ijazah|No\.\s*Seri)\s*[:;\-\.]?\s*)?(\b\d{14,15}\b)",
+    r"(?:\b(?:No\.\s*Ijazah|PIN|Nomor\s*Ijazah|No\.\s*Seri)\s*[:;\-\.]?\s*)?(\b[\dOoQDIli\|ZzSsGbB]{14,15}\b)",
     re.IGNORECASE,
 )
 
@@ -43,7 +43,7 @@ REGEX_IJAZAH_SEKOLAH = re.compile(
 )
 
 REGEX_NISN = re.compile(
-    r"(?:\bNISN\s*[:;\-\.]?\s*)?(\b\d{10}\b)",
+    r"(?:\bNISN\s*[:;\-\.]?\s*)?(\b[\dOoQDIli\|ZzSsGbB]{10}\b)",
     re.IGNORECASE,
 )
 
