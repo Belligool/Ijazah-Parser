@@ -67,6 +67,6 @@ LABEL_TEMPAT_TANGGAL_LAHIR = re.compile(
     re.IGNORECASE
 )
 LABEL_NOMOR_INDUK = re.compile(
-    r"(?:Nomor\s*Induk\s*(?:Mahasiswa|Siswa)?|NIM|NISN)\s*[:;\-]?\s*([A-Z0-9][\w\s\-]+)", 
+    r"(?:Nomor\s*Induk\s*(?:Mahasiswa|Siswa)?|NIM|NISN)\s*[:;\-]?\s*([A-Z0-9\.\-]+)", 
     re.IGNORECASE
 )

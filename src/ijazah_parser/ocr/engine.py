@@ -1,20 +1,18 @@
-import pytesseract
 import numpy as np
-from typing import Tuple
+import easyocr
 
-def extract_text_from_image(binary_image: np.ndarray) -> Tuple[str, float]:
-    custom_config = r'--oem 3 --psm 4'
-    data = pytesseract.image_to_data(
-        binary_image,
-        output_type=pytesseract.Output.DICT,
-        config=custom_config
-    )
-    text_parts = []
+print("Loading Deep Learning OCR Models...")
+reader = easyocr.Reader(['id', 'en'], gpu=True)
+
+def extract_text_from_image(image_array: np.ndarray) -> tuple[str, float]:
+    results = reader.readtext(image_array, detail=1, paragraph=False)
+    extracted_lines = []
     confidences = []
-    for i, word in enumerate(data['text']):
-        if word.strip():
-            text_parts.append(word)
-            confidences.append(int(data['conf'][i]))
-    ocr_text = " ".join(text_parts)
-    avg_conf = (sum(confidences) / len(confidences)) / 100.0 if confidences else 0.0
-    return ocr_text, avg_conf
+    
+    for (bbox, text, prob) in results:
+        extracted_lines.append(text)
+        confidences.append(prob)
+    full_text = "\n".join(extracted_lines)
+    avg_confidence = sum(confidences) / len(confidences) if confidences else 0.0
+    
+    return full_text, avg_confidence
