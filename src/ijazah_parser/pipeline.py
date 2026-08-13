@@ -14,8 +14,8 @@ def process_single_image(image_path: str, is_transcript: bool = False) -> Dict[s
     clean_image = remove_guilloche_background(image_path)
     binary_image = apply_adaptive_thresholding(clean_image)
     debug_img_name = f"debug_{os.path.basename(image_path)}"
-    cv2.imwrite(os.path.join("data", "samples", debug_img_name), binary_image)
-    ocr_text, avg_confidence = extract_text_from_image(clean_image)
+    cv2.imwrite(os.path.join("data", "processed", debug_img_name), binary_image)
+    ocr_text, avg_confidence = extract_text_from_image(binary_image)
     print(f"\n--- RAW OCR FOR {os.path.basename(image_path)} ---")
     print(ocr_text)
     print("--------------------------------------------------\n")
@@ -69,16 +69,16 @@ def process_file(file_path: str, is_transcript: bool = False) -> List[Dict[str, 
 
 def process_directory(folder_path: str, is_transcript: bool = False) -> Dict[str, List[Dict[str, Any]]]:
     if not os.path.exists(folder_path):
-        raise FileNotFoundError(f"Directory not found: {folder_path}")
+        raise FileNotFoundError(f"Directory not found: {file_path}")
     supported_extensions = ('*.png', '*.jpg', '*.jpeg', '*.pdf')
-    unique_files = set() 
+    files_to_process = []
     for ext in supported_extensions:
-        unique_files.update(glob.glob(os.path.join(folder_path, ext)))
-        unique_files.update(glob.glob(os.path.join(folder_path, ext.upper())))
+        files_to_process.extend(glob.glob(os.path.join(folder_path, ext)))
+        files_to_process.extend(glob.glob(os.path.join(folder_path, ext.upper())))
     results = {}
-    for file_path in list(unique_files):
+    for file_path in files_to_process:
         filename = os.path.basename(file_path)
-        print(f"Processing: {filename}...")
+        print(f"Processing {filename}")
         try:
             parsed_data = process_file(file_path, is_transcript)
             results[filename] = parsed_data
