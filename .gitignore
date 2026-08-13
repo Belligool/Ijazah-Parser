@@ -4,3 +4,11 @@ src/ijazah_parser/extractors/__pycache__/
 src/ijazah_parser/ocr/__pycache__/
 src/ijazah_parser/preprocessing/__pycache__/
 src/ijazah_parser/validators/__pycache__/
+data/processed/*
+data/raw/*
+data/samples/*
+.pytest_cache/
+
+!data/processed/notes.txt
+!data/raw/notes.txt
+!data/samples/notes.txt
