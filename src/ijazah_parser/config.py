@@ -57,6 +57,16 @@ REGEX_TRANSCRIPT_ROW = re.compile(
     re.MULTILINE | re.IGNORECASE
 )
 
-LABEL_NAMA = r"(?:Nama\s*(?:Mahasiswa|Siswa|Lengkap)?|name)\s*[:;\-]\s*([A-Z\s\.,'`]+)"
-LABEL_TEMPAT_TANGGAL_LAHIR = r"(?:Tempat,\s*tanggal\s*lahir|Tempat\s*dan\s*tanggal\s*lahir|Tempat\s*tanggal\s*lahir)\s*[:;\-]\s*([A-Za-z\s]+),\s*(\d{1,2}\s+[A-Za-z]+\s+\d{4})"
-LABEL_NOMOR_INDUK = re.compile(r"(?:Nomor\s*Induk\s*(?:Mahasiswa|Siswa)?|NIM|NISN)\s*[:;\-]\s*([\w\s\-]+)", re.IGNORECASE)
+LABEL_NAMA = re.compile(
+    r"(?:Nama\s*(?:Mahasiswa|Siswa)?|menyatakan\s*bahwa|memberikan\s*(?:ijazah\s*)?kepada)\s*[:;\-]?\s*[\d\s\.\,]*([A-Z][A-Za-z\s\.,'`]+?)(?=\s+lahir\b|\s+diterima\b|\s+NIM\b|\s+NISN\b|\s+di\b|$)", 
+    re.IGNORECASE
+)
+
+LABEL_TEMPAT_TANGGAL_LAHIR = re.compile(
+    r"(?:Tempat,\s*tanggal\s*lahir\s*[:;\-]?|lahir\s*di)\s*([A-Za-z\s]+)(?:,|\s*tanggal)\s*(\d{1,2}\s+[A-Za-z]+\s+\d{4})", 
+    re.IGNORECASE
+)
+LABEL_NOMOR_INDUK = re.compile(
+    r"(?:Nomor\s*Induk\s*(?:Mahasiswa|Siswa)?|NIM|NISN)\s*[:;\-]?\s*([A-Z0-9][\w\s\-]+)", 
+    re.IGNORECASE
+)

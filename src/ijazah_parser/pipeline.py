@@ -1,6 +1,7 @@
 import os
 import glob
 import tempfile
+import cv2
 from typing import Dict, Any, List
 from pydantic import ValidationError
 from pdf2image import convert_from_path
@@ -12,7 +13,12 @@ from ijazah_parser.validators import IjazahRecord, BiodataSchema, AcademicSchema
 def process_single_image(image_path: str, is_transcript: bool = False) -> Dict[str, any]:
     clean_image = remove_guilloche_background(image_path)
     binary_image = apply_adaptive_thresholding(clean_image)
+    debug_img_name = f"debug_{os.path.basename(image_path)}"
+    cv2.imwrite(os.path.join("data", "processed", debug_img_name), binary_image)
     ocr_text, avg_confidence = extract_text_from_image(binary_image)
+    print(f"\n--- RAW OCR FOR {os.path.basename(image_path)} ---")
+    print(ocr_text)
+    print("--------------------------------------------------\n")
     biodata = extract_biodata(ocr_text)
     nomor_ijazah = extract_pin_sivil(ocr_text)
     if not nomor_ijazah:

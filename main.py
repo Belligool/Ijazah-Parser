@@ -1,10 +1,12 @@
 import os 
 import json
 import sys
+import time
 sys.path.insert(0, os.path.abspath("src"))
 from ijazah_parser.pipeline import process_directory
 
 def main():
+    start_time = time.perf_counter()
     input_dir = os.path.join("data", "raw")
     output_dir = os.path.join("data", "processed")
     output_file = os.path.join(output_dir, "extraction_results.json")
@@ -16,7 +18,11 @@ def main():
         return
     with open(output_file, "w", encoding="utf-8") as f:
         json.dump(results, f, indent=4, ensure_ascii=False)
-    print(f"Processed {len(results)} files succesfully.")
+    end_time = time.perf_counter()
+    total_seconds = end_time - start_time
+    hours, remainder = divmod(total_seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    print(f"Processed {len(results)} files succesfully in {int(hours)} hours, {int(minutes)} minutes, {seconds:.2f} seconds.")
     print(f"Output saved to: {output_file}")
 
 if __name__ == "__main__":
