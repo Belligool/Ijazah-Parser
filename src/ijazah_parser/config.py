@@ -63,9 +63,10 @@ LABEL_NAMA = re.compile(
 )
 
 LABEL_TEMPAT_TANGGAL_LAHIR = re.compile(
-    r"(?:Tempat,\s*tanggal\s*lahir\s*[:;\-]?|lahir\s*di)\s*([A-Za-z\s]+)(?:,|\s*tanggal)\s*(\d{1,2}\s+[A-Za-z]+\s+\d{4})", 
+    r"(?:Tempat(?:,|\s*dan)\s*tanggal\s*lahir\s*[:;\-]?|lahir\s*di)\s*([A-Za-z\s]+)(?:,|\s*tanggal)\s*(\d{1,2}\s+[A-Za-z]+\s+\d{4})", 
     re.IGNORECASE
 )
+
 LABEL_NOMOR_INDUK = re.compile(
-    r"(?i:Nomor\s*Induk\s*(?:Mahasiswa|Siswa)?|NIM|NISN)\s*[:;\-]?\s*([A-Z0-9\.\-]+)"
+    r"(?i:Nomor\s*Induk\s*(?:Mahasiswa|Siswa)?|NIM|NISN|NPM(?:\s*/\s*Tahun\s*Masuk)?)\s*[:;\-]?\s*([A-Z0-9\.\-]+)"
 )
