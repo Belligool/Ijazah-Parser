@@ -10,48 +10,42 @@ from ijazah_parser.ocr import extract_text_from_image
 from ijazah_parser.extractors import extract_biodata, extract_pin_sivil, extract_ijazah_sekolah, extract_ipk, extract_transcript_rows
 from ijazah_parser.validators import IjazahRecord, BiodataSchema, AcademicSchema
 
-def process_single_image(image_path: str, is_transcript: bool = False) -> Dict[str, any]:
+def process_single_image(image_path: str, is_transcript: bool = False) -> Dict[str, Any]:
     raw_image = cv2.imread(image_path)
-    upscaled_image = cv2.resize(raw_image, None, fx=2.0, fy=2.0, interpolation=cv2.INTER_CUBIC)
+    upscaled_raw = cv2.resize(raw_image, None, fx=2.0, fy=2.0, interpolation=cv2.INTER_CUBIC)
     clean_image = remove_guilloche_background(image_path)
     binary_image = apply_adaptive_thresholding(clean_image)
-    debug_img_name = f"debug_{os.path.basename(image_path)}"
-    cv2.imwrite(os.path.join("data", "samples", debug_img_name), binary_image)
-    ocr_text, avg_confidence = extract_text_from_image(upscaled_image)
-    print(f"\n--- RAW OCR FOR {os.path.basename(image_path)} ---")
-    print(ocr_text)
-    print("--------------------------------------------------\n")
+    upscaled_binary = cv2.resize(binary_image, None, fx=2.0, fy=2.0, interpolation=cv2.INTER_CUBIC)
+    print(f"\n[Pass 1] Running OCR on RAW upscaled image for {os.path.basename(image_path)}...")
+    ocr_text, avg_confidence = extract_text_from_image(upscaled_raw)
     biodata = extract_biodata(ocr_text)
     nomor_ijazah = extract_pin_sivil(ocr_text)
+    if biodata.nama == "UNKNOWN" or not biodata.nomor_induk:
+        print(f"[Pass 2] Fallback triggered! Retrying with preprocessed image...")
+        fallback_text, fallback_conf = extract_text_from_image(upscaled_binary)
+        fallback_biodata = extract_biodata(fallback_text)
+        if biodata.nama == "UNKNOWN":
+            biodata.nama = fallback_biodata.nama
+        if not biodata.nomor_induk:
+            biodata.nomor_induk = fallback_biodata.nomor_induk
+        if not biodata.tempat_lahir:
+            biodata.tempat_lahir = fallback_biodata.tempat_lahir
+        if not biodata.tanggal_lahir:
+            biodata.tanggal_lahir = fallback_biodata.tanggal_lahir
+        if not nomor_ijazah:
+            nomor_ijazah = extract_pin_sivil(fallback_text)
+        ocr_text = ocr_text + "\n" + fallback_text
     if not nomor_ijazah:
         nomor_ijazah = extract_ijazah_sekolah(ocr_text)
-    akademik = AcademicSchema(
-        institusi="UNKNOWN",
-        program_studi=None,
-        jenjang=None,
-        tanggal_lulus=None
-    )
+    akademik = AcademicSchema(institusi="UNKNOWN", program_studi=None, jenjang=None, tanggal_lulus=None)
     try:
-        record = IjazahRecord(
-            nomor_ijazah=nomor_ijazah,
-            biodata=biodata,
-            akademik=akademik,
-            raw_ocr_confidence=avg_confidence
-        )
+        record = IjazahRecord(nomor_ijazah=nomor_ijazah, biodata=biodata, akademik=akademik, raw_ocr_confidence=avg_confidence)
         output = record.model_dump()
         if is_transcript:
-            output["transcript_data"] = {
-                "ipk": extract_ipk(ocr_text),
-                "grades": extract_transcript_rows(ocr_text)
-            }
+            output["transcript_data"] = {"ipk": extract_ipk(ocr_text), "grades": extract_transcript_rows(ocr_text)}
         return output
     except ValidationError as e:
-        return {
-            "status": "error",
-            "message": "Validation failed on extracted data",
-            "details": e.errors(),
-            "raw_text": ocr_text
-        }
+        return {"status": "error", "message": "Validation failed", "details": e.errors()}
 
 def process_file(file_path: str, is_transcript: bool = False) -> List[Dict[str, Any]]:
     if not os.path.exists(file_path):
