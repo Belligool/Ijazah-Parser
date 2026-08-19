@@ -61,7 +61,7 @@ def process_file(file_path: str, is_transcript: bool = False) -> List[Dict[str, 
     elif ext == 'pdf':
         results = []
         with tempfile.TemporaryDirectory() as path:
-            images_from_path = convert_from_path(file_path, output_folder=path, fmt='png')
+            convert_from_path(file_path, output_folder=path, fmt='png', paths_only=True)
             for image_file in glob.glob(os.path.join(path, "*.png")):
                 results.append(process_single_image(image_file, is_transcript))
         return results

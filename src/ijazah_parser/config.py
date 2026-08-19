@@ -58,7 +58,7 @@ REGEX_TRANSCRIPT_ROW = re.compile(
 )
 
 LABEL_NAMA = re.compile(
-    r"(?i:Nama\s*(?:Mahasiswa|Siswa)?|menyatakan\s*bahwa|memberikan\s*(?:ijazah\s*)?kepada|Kepada)\s*[:;\-]?\s*[\d\s\.\,]*([A-Z][A-Za-z\s\.,'`]+?)(?=\s*[:\n]|\s+lahir\b|\s+diterima\b|\s+NIM\b|\s+NISN\b|\s+NPM\b|\s+di\b|$)"
+    r"(?i:Nama\s*(?:Mahasiswa|Siswa)?|menyatakan\s*bahwa|memberikan\s*(?:ijazah\s*)?kepada|Kepada)\s*[:;\-]?\s*[\d\s\.\,]*([A-Z][A-Za-z\s\.,'`]+?)(?=\s*[:\n]|\s+[Tt]empat\b|\s+[Ll]ahir\b|\s+[Dd]iterima\b|\s+NIM\b|\s+NISN\b|\s+NPM\b|\s+di\b|$)"
 )
 
 LABEL_TEMPAT_TANGGAL_LAHIR = re.compile(
