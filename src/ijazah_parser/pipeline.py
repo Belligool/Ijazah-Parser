@@ -20,6 +20,11 @@ def process_single_image(image_path: str, is_transcript: bool = False) -> Dict[s
     ocr_text, avg_confidence = extract_text_from_image(upscaled_raw)
     biodata = extract_biodata(ocr_text)
     nomor_ijazah = extract_pin_sivil(ocr_text)
+    print(f"\n--- RAW OCR FOR {os.path.basename(image_path)} ---")
+    print(ocr_text)
+    print("--------------------------------------------------\n")
+    debug_img_name = f"debug_{os.path.basename(image_path)}"
+    cv2.imwrite(os.path.join("data", "samples", debug_img_name), binary_image)
     if biodata.nama == "UNKNOWN" or not biodata.nomor_induk:
         print(f"[Pass 2] Fallback triggered! Retrying with preprocessed image...")
         fallback_text, fallback_conf = extract_text_from_image(upscaled_binary)
