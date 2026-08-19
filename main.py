@@ -3,7 +3,7 @@ import json
 import sys
 import time
 sys.path.insert(0, os.path.abspath("src"))
-from ijazah_parser.pipeline import process_directory
+from ijazah_parser.pipeline import *
 
 def main():
     start_time = time.perf_counter()
@@ -26,4 +26,10 @@ def main():
     print(f"Output saved to: {output_file}")
 
 if __name__ == "__main__":
-    main()
+    folder_to_scan = "data/raw"
+    output_folder = os.path.join("data", "processed")
+    output_file = os.path.join(output_folder, "extraction_results.xlsx")
+    os.makedirs(output_folder, exist_ok=True)
+    print("Starting pipeline...")
+    extraction_results = process_directory(folder_to_scan)
+    export_to_excel(extraction_results, output_file)

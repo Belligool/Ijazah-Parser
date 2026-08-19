@@ -2,6 +2,7 @@ import os
 import glob
 import tempfile
 import cv2
+import pandas as pd
 from typing import Dict, Any, List
 from pydantic import ValidationError
 from pdf2image import convert_from_path
@@ -70,7 +71,7 @@ def process_file(file_path: str, is_transcript: bool = False) -> List[Dict[str, 
 
 def process_directory(folder_path: str, is_transcript: bool = False) -> Dict[str, List[Dict[str, Any]]]:
     if not os.path.exists(folder_path):
-        raise FileNotFoundError(f"Directory not found: {file_path}")
+        raise FileNotFoundError(f"Directory not found: {folder_path}")
     supported_extensions = ('*.png', '*.jpg', '*.jpeg', '*.pdf')
     unique_files = set()
     for ext in supported_extensions:
@@ -89,3 +90,28 @@ def process_directory(folder_path: str, is_transcript: bool = False) -> Dict[str
                 "message": f"Pipeline crashed: {str(e)}"
             }]
     return results
+
+def export_to_excel(results: dict, output_filename: str = "extraction_results.xlsx"):
+    data_rows = []
+    for filename, file_data in results.items():
+        if not file_data or file_data[0].get("status") == "error":
+            data_rows.append({
+                "File Name": filename,
+                "Nama": "ERROR",
+                "Tempat Lahir": "ERROR",
+                "Tanggal Lahir": "ERROR",
+                "Nomor Induk": "ERROR"
+            })
+            continue
+        record = file_data[0]
+        biodata = record.get("biodata", {})
+        data_rows.append({
+            "File Name": filename,
+            "Nama": biodata.get("nama"),
+            "Tempat Lahir": biodata.get("tempat_lahir"),
+            "Tanggal Lahir": biodata.get("tanggal_lahir"),
+            "Nomor Induk": biodata.get("nomor_induk")
+        })
+    df = pd.DataFrame(data_rows)
+    df.to_excel(output_filename, index=False)
+    print(f"\nData successfully exported to {output_filename}")
